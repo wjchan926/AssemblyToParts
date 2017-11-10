@@ -91,9 +91,11 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ParameterList.cs" />
     <Compile Include="StandardAddInServer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UpdateIlogic.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AssemblyToParts.X.manifest" />
