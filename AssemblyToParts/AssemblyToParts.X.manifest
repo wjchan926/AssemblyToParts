@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+
+  <assemblyIdentity name="AssemblyToParts" version="1.0.0.0"></assemblyIdentity>
+
+  <clrClass clsid="{124e7311-6a45-4301-8485-29fc60060a1f}" progid="AssemblyToParts.StandardAddInServer" threadingModel="Both" name="AssemblyToParts.StandardAddInServer" runtimeVersion=""></clrClass>
+
+  <file name="AssemblyToParts.dll" hashalg="SHA1"></file>
+
+</assembly>
