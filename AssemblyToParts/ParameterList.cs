@@ -5,44 +5,84 @@ using System.Text;
 using System.Threading.Tasks;
 using Inventor;
 using System.Runtime.InteropServices;
+using System.Collections;
 
 namespace InvAddIn
 {
     class ParameterList
     {
         private Application invApp;
-        private UserParameters userParameters;
-        private AssemblyDocument currentAssembly;
+        private UserParameters assemblyParameters;
+        private AssemblyComponentDefinition currentAssembly;
+        private AssemblyDocument assemblyDoc;
+        
 
         public ParameterList()
         {
-            invApp = (Inventor.Application)Marshal.GetActiveObject("Inventor.Application");
-            currentAssembly = (AssemblyDocument)invApp.ActiveDocument;
-            userParameters = currentAssembly.ComponentDefinition.Parameters.UserParameters;
+            invApp = (Application)Marshal.GetActiveObject("Inventor.Application");
+            assemblyDoc = (AssemblyDocument)invApp.ActiveDocument;
+            currentAssembly = assemblyDoc.ComponentDefinition;
+            assemblyParameters = currentAssembly.Parameters.UserParameters;
         }
 
         public void pushChildren()
         {
-            foreach (PartDocument partFile in userParameters)
-            {
-                try
-                {
-                    UserParameters partParameters = partFile.ComponentDefinition.Parameters.UserParameters;
+            DocumentsEnumerator allRefDocs = assemblyDoc.AllReferencedDocuments;
 
-                    foreach (UserParameter userParameter in userParameters)
+            try
+            {
+                foreach (Document oDoc in allRefDocs)
+                {
+                    if (oDoc.DocumentType.Equals(DocumentTypeEnum.kPartDocumentObject))
                     {
-                        if (userParameter.IsKey)
+                        // For Parts
+                        PartDocument partFile = (PartDocument)oDoc;
+                        PartComponentDefinition partFileDef = partFile.ComponentDefinition;
+                        UserParameters partParameters = partFileDef.Parameters.UserParameters;
+                        ArrayList paraList = new ArrayList();
+
+                        foreach (Parameter parameter in partParameters)
                         {
-                            partParameters.AddByExpression(userParameter.Name, userParameter.Expression, userParameter.get_Units());
+                            paraList.Add(parameter.Name);
+                        }
+
+                        foreach (Parameter parameter in assemblyParameters)
+                        {
+                            if (parameter.IsKey && !paraList.Contains(parameter.Name))
+                            {
+                                partParameters.AddByExpression(parameter.Name, parameter.Expression, parameter.get_Units());
+                            }
+                        }
+                    }
+
+                    else if (oDoc.DocumentType.Equals(DocumentTypeEnum.kAssemblyDocumentObject))
+                    {
+                        // For Subassemblies
+                        AssemblyDocument partFile = (AssemblyDocument)oDoc;
+                        AssemblyComponentDefinition subAssemblyDef = partFile.ComponentDefinition;
+                        UserParameters subAssemblyParameters = subAssemblyDef.Parameters.UserParameters;
+
+                        ArrayList paraList = new ArrayList();
+
+                        foreach (Parameter parameter in subAssemblyParameters)
+                        {
+                            paraList.Add(parameter.Name);
+                        }
+
+                        foreach (Parameter parameter in assemblyParameters)
+                        {
+                            if (parameter.IsKey && !paraList.Contains(parameter.Name))
+                            {
+                                subAssemblyParameters.AddByExpression(parameter.Name, parameter.Expression, parameter.get_Units());
+                            }
                         }
                     }
 
                 }
-                catch (Exception ex)
-                {
+            } catch (Exception ex)
+            {
 
-                }
-            }
+            }          
         }
 
     }
