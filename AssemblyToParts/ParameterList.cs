@@ -23,6 +23,7 @@ namespace InvAddIn
             assemblyDoc = (AssemblyDocument)invApp.ActiveDocument;
             currentAssembly = assemblyDoc.ComponentDefinition;
             assemblyParameters = currentAssembly.Parameters.UserParameters;
+            
         }
 
         public void pushChildren()

@@ -18,7 +18,7 @@ namespace AssemblyToParts
         // Inventor application object.
         private Inventor.Application m_inventorApplication;
         private ButtonDefinition m_PushParametersButton;
-   //     private ButtonDefinition m_UpdateIlogicButtton;
+        private ButtonDefinition m_UpdateIlogicButtton;
 
         private static string addInGUID = "124e7311-6a45-4301-8485-29fc60060a1f";
 
@@ -43,7 +43,7 @@ namespace AssemblyToParts
             ControlDefinitions controlDefs = m_inventorApplication.CommandManager.ControlDefinitions;
 
             m_PushParametersButton = controlDefs.AddButtonDefinition("Push\nParameters", "PushParameters", CommandTypesEnum.kNonShapeEditCmdType, addInGUID, "Push Assembly Parameters to child parts.", "Push Parameters");
-      //      m_UpdateIlogicButtton = controlDefs.AddButtonDefinition("Update\niLogic", "UpdateIlogic", CommandTypesEnum.kShapeEditCmdType, addInGUID, "Update Ilogic for passing assembly parameters to children.", "Update iLogic");
+            m_UpdateIlogicButtton = controlDefs.AddButtonDefinition("Update\niLogic", "UpdateIlogic", CommandTypesEnum.kShapeEditCmdType, addInGUID, "Update Ilogic for passing assembly parameters to children.", "Update iLogic");
 
             if (firstTime)
             {
@@ -61,7 +61,7 @@ namespace AssemblyToParts
                             // This is a new panel that can be made
                             RibbonPanel panel = tab.RibbonPanels.Add("Assembly to Parts", "Autodesk:Assembly to Parts:Panel1", addInGUID, "", false);
                             CommandControl control1 = panel.CommandControls.AddButton(m_PushParametersButton, true, true, "", false);
-            //                CommandControl control2 = panel.CommandControls.AddButton(m_UpdateIlogicButtton, true, true, "", false);
+                            CommandControl control2 = panel.CommandControls.AddButton(m_UpdateIlogicButtton, true, true, "", false);
                         }
                         catch (Exception ex)
                         {
@@ -73,7 +73,7 @@ namespace AssemblyToParts
                         // For classic interface, possibly incorrect code
                         CommandBar oCommandBar = m_inventorApplication.UserInterfaceManager.CommandBars["AMxAssemblyPanelCmdBar"];
                         oCommandBar.Controls.AddButton(m_PushParametersButton, 0);
-         //               oCommandBar.Controls.AddButton(m_UpdateIlogicButtton, 0);
+                        oCommandBar.Controls.AddButton(m_UpdateIlogicButtton, 0);
                     }
                 }
                 catch
@@ -81,12 +81,12 @@ namespace AssemblyToParts
                     // For classic interface, possibly incorrect code
                     CommandBar oCommandBar = m_inventorApplication.UserInterfaceManager.CommandBars["AMxAssemblyPanelCmdBar"];
                     oCommandBar.Controls.AddButton(m_PushParametersButton, 0);
-          //          oCommandBar.Controls.AddButton(m_UpdateIlogicButtton, 0);
+                    oCommandBar.Controls.AddButton(m_UpdateIlogicButtton, 0);
                 }
             }
 
             m_PushParametersButton.OnExecute += new ButtonDefinitionSink_OnExecuteEventHandler(m_PushParametersButton_OnExecute);
-    //        m_UpdateIlogicButtton.OnExecute += new ButtonDefinitionSink_OnExecuteEventHandler(m_UpdateIlogicButtton_OnExecute);
+            m_UpdateIlogicButtton.OnExecute += new ButtonDefinitionSink_OnExecuteEventHandler(m_UpdateIlogicButtton_OnExecute);
         }
 
         public void Deactivate()
@@ -103,8 +103,8 @@ namespace AssemblyToParts
             Marshal.ReleaseComObject(m_PushParametersButton);
             m_PushParametersButton = null;
 
-     //       Marshal.ReleaseComObject(m_UpdateIlogicButtton);
-      //      m_UpdateIlogicButtton = null;
+            Marshal.ReleaseComObject(m_UpdateIlogicButtton);
+            m_UpdateIlogicButtton = null;
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -135,11 +135,12 @@ namespace AssemblyToParts
             ParameterList parameterList = new ParameterList();
             parameterList.pushChildren();
         }
-      /*  public void m_UpdateIlogicButtton_OnExecute(NameValueMap Context)
+
+        public void m_UpdateIlogicButtton_OnExecute(NameValueMap Context)
         {
             UpdateIlogic updateIlogic = new UpdateIlogic();
             updateIlogic.updateParametersRule();
-        }*/
+        }
 
 
         #endregion
