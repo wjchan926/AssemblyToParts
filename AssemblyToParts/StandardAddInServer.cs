@@ -160,7 +160,7 @@ namespace AssemblyToParts
                 return null;
             }
         }
-
+        /*
         public void m_PushParametersButton_OnExecute(NameValueMap Context)
         {
             ParameterList parameterList = new ParameterList();
@@ -171,7 +171,7 @@ namespace AssemblyToParts
         {
             UpdateIlogic updateIlogic = new UpdateIlogic();
             updateIlogic.updateParametersRule();
-        }
+        }*/
 
         public void m_PushAndUpdateButton_OnExecute(NameValueMap Context)
         {

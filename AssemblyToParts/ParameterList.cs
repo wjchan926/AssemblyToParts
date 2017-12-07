@@ -47,12 +47,21 @@ namespace InvAddIn
                             paraList.Add(parameter.Name);
                         }
 
-                        foreach (Parameter parameter in assemblyParameters)
+                        try
                         {
-                            if (parameter.IsKey && !paraList.Contains(parameter.Name))
+                            foreach (Parameter parameter in assemblyParameters)
                             {
-                                partParameters.AddByExpression(parameter.Name, parameter.Expression, parameter.get_Units());
+                                if (parameter.IsKey && !paraList.Contains(parameter.Name))
+                                {
+                                    partParameters.AddByExpression(parameter.Name, "1", parameter.get_Units());
+
+                                }
                             }
+                        }
+                        catch (Exception)
+                        {
+
+                            throw;
                         }
                     }
 
@@ -65,24 +74,32 @@ namespace InvAddIn
 
                         ArrayList paraList = new ArrayList();
 
-                        foreach (Parameter parameter in subAssemblyParameters)
+                        try
                         {
-                            paraList.Add(parameter.Name);
-                        }
-
-                        foreach (Parameter parameter in assemblyParameters)
-                        {
-                            if (parameter.IsKey && !paraList.Contains(parameter.Name))
+                            foreach (Parameter parameter in subAssemblyParameters)
                             {
-                                subAssemblyParameters.AddByExpression(parameter.Name, parameter.Expression, parameter.get_Units());
+                                paraList.Add(parameter.Name);
                             }
+
+                            foreach (Parameter parameter in assemblyParameters)
+                            {
+                                if (parameter.IsKey && !paraList.Contains(parameter.Name))
+                                {
+                                    subAssemblyParameters.AddByExpression(parameter.Name, "1", parameter.get_Units());
+                                }
+                            }                            
+                        }
+                        catch (Exception)
+                        {
+
+                            throw;
                         }
                     }
 
                 }
             } catch (Exception ex)
             {
-
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }          
         }
 
