@@ -10,6 +10,7 @@ using System.Windows.Forms;
 namespace AssemblyToParts
 {
     /// <summary>
+    /// Add-In Version 2.3.1
     /// This is the primary AddIn Server class that implements the ApplicationAddInServer interface
     /// that all Inventor AddIns are required to implement. The communication between Inventor and
     /// the AddIn is via the methods on this interface.
@@ -21,6 +22,7 @@ namespace AssemblyToParts
         // Inventor application object.
         private Inventor.Application m_inventorApplication;
         private ButtonDefinition m_PushAndUpdateButton;
+        private ButtonDefinition m_PullFromParents;
 
         private static string addInGUID = "124e7311-6a45-4301-8485-29fc60060a1f";
 
@@ -59,14 +61,15 @@ namespace AssemblyToParts
             Icon smallPush = new Icon(appData + @"\Autodesk\ApplicationPlugins\AssemblyToParts\push parameters.ico");
             Icon largePush = new Icon(appData + @"\Autodesk\ApplicationPlugins\AssemblyToParts\\push parameters.ico");
 
-        //    System.IO.Directory.SetCurrentDirectory(originalDir);
-
             stdole.IPictureDisp smallPushIcon = PictureDispConverter.ToIPictureDisp(smallPush);
             stdole.IPictureDisp largePushIcon = PictureDispConverter.ToIPictureDisp(largePush);
             // End Icon code
             
-            m_PushAndUpdateButton = controlDefs.AddButtonDefinition("Push and\nUpdate", "UpdateIlogic", CommandTypesEnum.kShapeEditCmdType, addInGUID, "Push Assembly Parameters to child parts and/nupdate Ilogic for passing assembly parameters to children.",
+            m_PushAndUpdateButton = controlDefs.AddButtonDefinition("Push and\nUpdate", "Push Parameters and UpdateIlogic", CommandTypesEnum.kShapeEditCmdType, addInGUID, "Push Assembly Parameters to child parts and/nupdate Ilogic for passing assembly parameters to children.",
                 "Push Parameters and Update iLogic", smallPushIcon, largePushIcon);
+
+            m_PullFromParents = controlDefs.AddButtonDefinition("Pull From\nParent", "Pull Parameters from Parent", CommandTypesEnum.kShapeEditCmdType, addInGUID, "Pull Key Parameters from a chose parent file and add to the part's user parameters.",
+                "Push Key Parameters from parent file.", smallPushIcon, largePushIcon);
 
             if (firstTime)
             {
@@ -75,17 +78,33 @@ namespace AssemblyToParts
                 {
                     if (m_inventorApplication.UserInterfaceManager.InterfaceStyle == InterfaceStyleEnum.kRibbonInterface)
                     {
-                        Ribbon ribbon = m_inventorApplication.UserInterfaceManager.Ribbons["Assembly"];
-                        RibbonTab tab = ribbon.RibbonTabs["id_TabAssemble"];
+                        Ribbon assemblyRibbon = m_inventorApplication.UserInterfaceManager.Ribbons["Assembly"];
+                        RibbonTab assemblyTab = assemblyRibbon.RibbonTabs["id_TabAssemble"];
+
+                        Ribbon partRibbon = m_inventorApplication.UserInterfaceManager.Ribbons["Part"];
+                        RibbonTab sketchTab = partRibbon.RibbonTabs["id_TabSketch"];
+                        RibbonTab sheetMetalTab = partRibbon.RibbonTabs["id_TabSheetMetal"];
+                        RibbonTab modelTab = partRibbon.RibbonTabs["id_TabModel"];
+
 
                         try
                         {
                             // For ribbon interface
                             // This is a new panel that can be made
-                            RibbonPanel panel = tab.RibbonPanels.Add("Assembly to Parts", "Autodesk:Assembly to Parts:Panel1", addInGUID, "", false);
+                            RibbonPanel panel = assemblyTab.RibbonPanels.Add("Assembly to Parts", "Autodesk:Assembly to Parts:Panel1", addInGUID, "", false);
                             //   CommandControl control1 = panel.CommandControls.AddButton(m_PushParametersButton, true, true, "", false);
                             //  CommandControl control2 = panel.CommandControls.AddButton(m_UpdateIlogicButtton, true, true, "", false);
                             CommandControl control1 = panel.CommandControls.AddButton(m_PushAndUpdateButton, true, true, "", false);
+
+                            RibbonPanel panel_sketch = sketchTab.RibbonPanels.Add("Assembly to Parts", "Autodesk:Assembly to Parts:panel_sketch", addInGUID, "", false);
+                            CommandControl control3 = panel_sketch.CommandControls.AddButton(m_PullFromParents, true, true, "", false);
+
+                            RibbonPanel pane1_sheetMetal = sheetMetalTab.RibbonPanels.Add("Assembly to Parts", "Autodesk:Assembly to Parts:pane1_sheetMetal", addInGUID, "", false);
+                            CommandControl control4 = pane1_sheetMetal.CommandControls.AddButton(m_PullFromParents, true, true, "", false);
+
+                            RibbonPanel panel_model = modelTab.RibbonPanels.Add("Assembly to Parts", "Autodesk:Assembly to Parts:pane1_sheetMetal", addInGUID, "", false);
+                            CommandControl control5 = panel_model.CommandControls.AddButton(m_PullFromParents, true, true, "", false);
+
                         }
                         catch (Exception ex)
                         {
@@ -97,8 +116,9 @@ namespace AssemblyToParts
                         // For classic interface, possibly incorrect code
                         CommandBar oCommandBar = m_inventorApplication.UserInterfaceManager.CommandBars["AMxAssemblyPanelCmdBar"];
                         oCommandBar.Controls.AddButton(m_PushAndUpdateButton, 0);
-                    //    oCommandBar.Controls.AddButton(m_PushParametersButton, 0);
-                    //oCommandBar.Controls.AddButton(m_UpdateIlogicButtton, 0);
+                        oCommandBar.Controls.AddButton(m_PullFromParents, 0);
+                        //    oCommandBar.Controls.AddButton(m_PushParametersButton, 0);
+                        //oCommandBar.Controls.AddButton(m_UpdateIlogicButtton, 0);
                     }
                 }
                 catch
@@ -106,14 +126,14 @@ namespace AssemblyToParts
                     // For classic interface, possibly incorrect code
                     CommandBar oCommandBar = m_inventorApplication.UserInterfaceManager.CommandBars["AMxAssemblyPanelCmdBar"];
                     oCommandBar.Controls.AddButton(m_PushAndUpdateButton, 0);
+                    oCommandBar.Controls.AddButton(m_PullFromParents, 0);
                     //    oCommandBar.Controls.AddButton(m_PushParametersButton, 0);
                     //oCommandBar.Controls.AddButton(m_UpdateIlogicButtton, 0);
                 }
             }
-
-            //  m_PushParametersButton.OnExecute += new ButtonDefinitionSink_OnExecuteEventHandler(m_PushParametersButton_OnExecute);
-            //  m_UpdateIlogicButtton.OnExecute += new ButtonDefinitionSink_OnExecuteEventHandler(m_UpdateIlogicButtton_OnExecute);
+            
             m_PushAndUpdateButton.OnExecute += new ButtonDefinitionSink_OnExecuteEventHandler(m_PushAndUpdateButton_OnExecute);
+            m_PullFromParents.OnExecute += new ButtonDefinitionSink_OnExecuteEventHandler(m_PullFromParents_OnExecute);
         }
 
         public void Deactivate()
@@ -127,15 +147,11 @@ namespace AssemblyToParts
             // Release objects.
             m_inventorApplication = null;
 
-            /*
-            Marshal.ReleaseComObject(m_PushParametersButton);
-            m_PushParametersButton = null;
-
-            Marshal.ReleaseComObject(m_UpdateIlogicButton);
-            m_UpdateIlogicButton = null;*/
-
             Marshal.ReleaseComObject(m_PushAndUpdateButton);
             m_PushAndUpdateButton = null;
+
+            Marshal.ReleaseComObject(m_PullFromParents);
+            m_PullFromParents = null;
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -160,19 +176,6 @@ namespace AssemblyToParts
                 return null;
             }
         }
-        /*
-        public void m_PushParametersButton_OnExecute(NameValueMap Context)
-        {
-            ParameterList parameterList = new ParameterList();
-            parameterList.pushChildren();
-        }
-
-        public void m_UpdateIlogicButtton_OnExecute(NameValueMap Context)
-        {
-            UpdateIlogic updateIlogic = new UpdateIlogic();
-            updateIlogic.updateParametersRule();
-        }*/
-
         public void m_PushAndUpdateButton_OnExecute(NameValueMap Context)
         {
             ParameterList parameterList = new ParameterList();
@@ -182,10 +185,14 @@ namespace AssemblyToParts
             updateIlogic.updateParametersRule();
         }
 
+        public void m_PullFromParents_OnExecute(NameValueMap Context)
+        {
+
+        }
 
 
         #endregion
-        
+
     }
 
     public sealed class PictureDispConverter
