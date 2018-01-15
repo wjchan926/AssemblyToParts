@@ -24,7 +24,9 @@ namespace InvAddIn
 
         public PartParameterList(){
             invApp = (Inventor.Application)Marshal.GetActiveObject("Inventor.Application");
-            partDoc = (PartDocument)invApp.ActiveDocument;
+            
+            // Must Detect if in In-Place Edit Session
+            partDoc = (PartDocument)invApp.ActiveEditDocument;
             currentPartDef = partDoc.ComponentDefinition;
         }
 
