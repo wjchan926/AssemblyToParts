@@ -68,7 +68,7 @@ namespace AssemblyToParts
             m_PushAndUpdateButton = controlDefs.AddButtonDefinition("Push and\nUpdate", "Push Parameters and UpdateIlogic", CommandTypesEnum.kShapeEditCmdType, addInGUID, "Push Assembly Parameters to child parts and/nupdate Ilogic for passing assembly parameters to children.",
                 "Push Parameters and Update iLogic", smallPushIcon, largePushIcon);
 
-            m_PullFromParents = controlDefs.AddButtonDefinition("Pull From\nParent", "Pull Parameters from Parent", CommandTypesEnum.kShapeEditCmdType, addInGUID, "Pull Key Parameters from a chose parent file and add to the part's user parameters.",
+            m_PullFromParents = controlDefs.AddButtonDefinition("Pull Parameters", "Pull Parameters from Parent", CommandTypesEnum.kShapeEditCmdType, addInGUID, "Pull Key Parameters from a chose parent file and add to the part's user parameters.",
                 "Push Key Parameters from parent file.", smallPushIcon, largePushIcon);
 
             if (firstTime)
@@ -78,9 +78,11 @@ namespace AssemblyToParts
                 {
                     if (m_inventorApplication.UserInterfaceManager.InterfaceStyle == InterfaceStyleEnum.kRibbonInterface)
                     {
+                        // Assembly Button
                         Ribbon assemblyRibbon = m_inventorApplication.UserInterfaceManager.Ribbons["Assembly"];
                         RibbonTab assemblyTab = assemblyRibbon.RibbonTabs["id_TabAssemble"];
 
+                        // Part Buttons
                         Ribbon partRibbon = m_inventorApplication.UserInterfaceManager.Ribbons["Part"];
                         RibbonTab sketchTab = partRibbon.RibbonTabs["id_TabSketch"];
                         RibbonTab sheetMetalTab = partRibbon.RibbonTabs["id_TabSheetMetal"];
@@ -95,6 +97,10 @@ namespace AssemblyToParts
                             //   CommandControl control1 = panel.CommandControls.AddButton(m_PushParametersButton, true, true, "", false);
                             //  CommandControl control2 = panel.CommandControls.AddButton(m_UpdateIlogicButtton, true, true, "", false);
                             CommandControl control1 = panel.CommandControls.AddButton(m_PushAndUpdateButton, true, true, "", false);
+
+                            // Child asy pulling from Parent
+          //                  RibbonPanel panel_asm = assemblyTab.RibbonPanels.Add("Assembly to Parts", "Autodesk:Assembly to Parts:panel_asm", addInGUID, "", false);
+               //             CommandControl control2 = panel_asm.CommandControls.AddButton(m_PullFromParents, true, true, "", false);
 
                             RibbonPanel panel_sketch = sketchTab.RibbonPanels.Add("Assembly to Parts", "Autodesk:Assembly to Parts:panel_sketch", addInGUID, "", false);
                             CommandControl control3 = panel_sketch.CommandControls.AddButton(m_PullFromParents, true, true, "", false);
@@ -187,6 +193,8 @@ namespace AssemblyToParts
 
         public void m_PullFromParents_OnExecute(NameValueMap Context)
         {
+            PartParameterList partParameterList = new PartParameterList();
+            partParameterList.openPullParents();
 
         }
 

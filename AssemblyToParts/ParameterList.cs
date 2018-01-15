@@ -15,7 +15,7 @@ namespace InvAddIn
         private UserParameters assemblyParameters;
         private AssemblyComponentDefinition currentAssembly;
         private AssemblyDocument assemblyDoc;
-        
+
 
         public ParameterList()
         {
@@ -23,7 +23,7 @@ namespace InvAddIn
             assemblyDoc = (AssemblyDocument)invApp.ActiveDocument;
             currentAssembly = assemblyDoc.ComponentDefinition;
             assemblyParameters = currentAssembly.Parameters.UserParameters;
-            
+
         }
 
         public void pushChildren()
@@ -87,7 +87,7 @@ namespace InvAddIn
                                 {
                                     subAssemblyParameters.AddByExpression(parameter.Name, "1", parameter.get_Units());
                                 }
-                            }                            
+                            }
                         }
                         catch (Exception)
                         {
@@ -97,11 +97,12 @@ namespace InvAddIn
                     }
 
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-            }          
+            }
         }
-
     }
+
 }
