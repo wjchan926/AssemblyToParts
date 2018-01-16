@@ -32,9 +32,10 @@ namespace InvAddIn
 
         public void openPullParents()
         {
-            FileBrowser fileBrowser = new FileBrowser(openFolder());
+            // Added the First Generation Parent as default for the parent V3.1.0
+            FileBrowser fileBrowser = new FileBrowser(openFolder(), invApp.ActiveDocument.FullFileName);
             fileBrowser.ShowDialog();
-
+         
             if (fileBrowser.DialogResult == DialogResult.OK)
             {
                 string parentFile = fileBrowser.getFileChosen();

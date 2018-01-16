@@ -12,11 +12,14 @@ namespace InvAddIn
 {
     public partial class FileBrowser : Form
     {
-        public FileBrowser(string s)
+        private string firstGenParent;
+
+        public FileBrowser(string s, string defaultParent)
         {
             InitializeComponent();
             openFileDialog1.InitialDirectory = s;
-            openFileDialog1.Filter = "Autodesk Inventor Assemblies (*.iam)|*.iam";            
+            openFileDialog1.Filter = "Autodesk Inventor Assemblies (*.iam)|*.iam";
+            firstGenParent = defaultParent;       
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -36,7 +39,8 @@ namespace InvAddIn
 
         private void FileBrowser_Load(object sender, EventArgs e)
         {
-
+            // Default to Last Gen Parent added V3.1.0
+            textBox1.Text = firstGenParent;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -48,7 +52,16 @@ namespace InvAddIn
         {
             return openFileDialog1.FileName;
         }
-       
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+
+        }
 
     }
 }
