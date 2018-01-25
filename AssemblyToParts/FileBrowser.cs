@@ -40,6 +40,7 @@ namespace InvAddIn
         private void FileBrowser_Load(object sender, EventArgs e)
         {
             // Default to Last Gen Parent added V3.1.0
+            openFileDialog1.FileName = firstGenParent;
             textBox1.Text = firstGenParent;
         }
 
