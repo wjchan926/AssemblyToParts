@@ -184,16 +184,16 @@ namespace AssemblyToParts
         }
         public void m_PushAndUpdateButton_OnExecute(NameValueMap Context)
         {
-            ParameterList parameterList = new ParameterList();
+            ParameterList parameterList = new ParameterList(m_inventorApplication);
             parameterList.pushChildren();
 
-            UpdateIlogic updateIlogic = new UpdateIlogic();
+            UpdateIlogic updateIlogic = new UpdateIlogic(m_inventorApplication);
             updateIlogic.updateParametersRule();
         }
 
         public void m_PullFromParents_OnExecute(NameValueMap Context)
         {
-            PartParameterList partParameterList = new PartParameterList();
+            PartParameterList partParameterList = new PartParameterList(m_inventorApplication);
             partParameterList.openPullParents();
 
         }

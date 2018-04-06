@@ -22,8 +22,8 @@ namespace InvAddIn
         private PartDocument partDoc;
         private PartComponentDefinition currentPartDef;
 
-        public PartParameterList(){
-            invApp = (Inventor.Application)Marshal.GetActiveObject("Inventor.Application");
+        public PartParameterList(Inventor.Application currentApp){
+            invApp = currentApp;
             
             // Must Detect if in In-Place Edit Session
             partDoc = (PartDocument)invApp.ActiveEditDocument;
@@ -126,7 +126,7 @@ namespace InvAddIn
                     // Try to add the parameter by nominal value
                     try
                     {
-                        childParameters.AddByValue(p.Name, p._Value, p.get_Units());
+                        childParameters.AddByValue(p.Name, p.Value, p.get_Units());
                     }
                     catch (Exception e)
                     {

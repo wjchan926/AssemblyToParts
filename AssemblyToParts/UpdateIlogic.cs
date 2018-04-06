@@ -19,9 +19,9 @@ namespace InvAddIn
         private Document currentAssembly;
         private String ruleName = "Dimensions to Parts";
 
-        public UpdateIlogic()
+        public UpdateIlogic(Inventor.Application currentApp)
         {
-            invApp = (Application)Marshal.GetActiveObject("Inventor.Application");
+            invApp = currentApp;
             currentAssembly = invApp.ActiveDocument;
             iLogicAddin = invApp.ApplicationAddIns.ItemById[iLogicAddinGuid];           
         }

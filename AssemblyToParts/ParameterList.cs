@@ -17,9 +17,9 @@ namespace InvAddIn
         private AssemblyDocument assemblyDoc;
 
 
-        public ParameterList()
+        public ParameterList(Inventor.Application currentApp)
         {
-            invApp = (Application)Marshal.GetActiveObject("Inventor.Application");
+            invApp = currentApp;
             assemblyDoc = (AssemblyDocument)invApp.ActiveDocument;
             currentAssembly = assemblyDoc.ComponentDefinition;
             assemblyParameters = currentAssembly.Parameters.UserParameters;
@@ -53,8 +53,9 @@ namespace InvAddIn
                             {
                                 if (parameter.IsKey && !paraList.Contains(parameter.Name))
                                 {
-                                    partParameters.AddByExpression(parameter.Name, "1", parameter.get_Units());
-
+                                    // Must use add by value to get parameters that are nonnumeric
+                                    partParameters.AddByValue(parameter.Name, parameter.Value, parameter.get_Units());
+                                    //   partParameters.AddByExpression(parameter.Name, parameter.Value, parameter.get_Units());
                                 }
                             }
                         }
