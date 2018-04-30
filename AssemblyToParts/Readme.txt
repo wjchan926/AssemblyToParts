@@ -13,7 +13,7 @@
 	Installation:
 	=============
 	Installation files are not provided.
-	Contact wchan@marlinsteel.com for installation details.
+	Contact wesley.j.chan@gmail.com for installation details.
 
 	License:
 	========
